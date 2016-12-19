@@ -1,0 +1,22 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+
+    <camel:camelContext id="camelContext">
+        <camel:routeBuilder ref="formatterRouteBuilder" />
+    </camel:camelContext>
+
+    <bean id="formatter" class="fr.kdefombelle.formatter.Formatter"/>
+    <bean id="formatterRouteBuilder" class="fr.kdefombelle.formatter.FormatterRouteBuilder"/>
+    <bean id="formatterXmlModelCreator" class="fr.kdefombelle.formatter.FreemarkerXmlModelCreator"/>
+
+        <!--constructor-arg index="0" value="${murex.reporting.user}" /-->
+
+</beans>
