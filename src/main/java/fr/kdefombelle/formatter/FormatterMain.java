@@ -18,7 +18,7 @@ public class FormatterMain
     public static void main( String[] args )
     {
         System.out.println( "FormatterMain Start!" );
-        ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/spring/camel-context.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/spring/spring.xml");
         context.getBean(Formatter.class).start();
         System.out.println( "FormatterMain Stop!" );
     }

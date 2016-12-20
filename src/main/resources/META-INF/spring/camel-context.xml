@@ -7,7 +7,9 @@
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:annotation-config />
+    <bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+        <property name="location" value="formatter.properties"/>
+    </bean>
 
     <camel:camelContext id="camelContext">
         <camel:routeBuilder ref="formatterRouteBuilder" />

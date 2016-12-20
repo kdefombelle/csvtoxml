@@ -17,7 +17,7 @@
 	</appender>
 
 	<logger name="org.apache.camel" additivity="true">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 
 	<logger name="fr.kdefombelle" additivity="true">

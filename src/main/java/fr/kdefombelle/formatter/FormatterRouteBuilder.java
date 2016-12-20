@@ -15,10 +15,13 @@ public class FormatterRouteBuilder extends RouteBuilder{
 
     @Override
     public void configure() throws Exception {
-        from("file:///Users/ka/Documents/work/dev/code/formatter/src/test/resources/?charset=UTF-8&noop=true")
+        from("file://{{input.folder}}?charset=UTF-8&noop=true")
                    .routeId("Formatter")
-                .log("Received order ${body}").bean(freemarkerXmlModelCreator)
-                .to("freemarker:fr/kdefombelle/formatter/test.ftl??contentCache=false")
-                .log("Received order ${body}").to("mock:result");
+                //.log("Received order ${body}")
+                .bean(freemarkerXmlModelCreator)
+                .to("freemarker:{{template.file}}??contentCache=false")
+                .log("Received order \n${body}")
+                .to("file:{{output.folder}}?charset=UTF-8")
+                .to("mock:result");
     }
 }

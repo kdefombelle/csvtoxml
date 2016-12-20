@@ -14,7 +14,79 @@
         <camel.version>2.18.1</camel.version>
         <spring.version>4.3.4.RELEASE</spring.version>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 					<binFolder>/</binFolder> -->
+                    <binFileExtensions>
+                        <unix>.sh</unix>
+                    </binFileExtensions>
+                    <repositoryName>jar</repositoryName>
+                    <repositoryLayout>flat</repositoryLayout>
+                    <!-- useWildcardClassPath>true</useWildcardClassPath-->
+                    <configurationDirectory>conf</configurationDirectory>
+                    <copyConfigurationDirectory>true</copyConfigurationDirectory>
+                    <!-- includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath -->
+                    <!-- licenseHeaderFile>${project.basedir}/src/main/appassembler/license.txt</licenseHeaderFile -->
+                    <assembleDirectory>${project.build.directory}/formatter</assembleDirectory>
+                    <!-- platforms>
+                        <platform>windows</platform>
+                        <platform>unix</platform>
+                    </platforms-->
+                    <programs>
+                        <program>
+                            <mainClass>fr.kdefombelle.formatter.FormatterMain</mainClass>
+                            <name>formatter</name>
+                            <jvmSettings>
+                                <initialMemorySize>1024m</initialMemorySize>
+                            </jvmSettings>
+                        </program>
+                    </programs>
+                </configuration>
+            </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>${project.basedir}/src/assembly/formatter-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -64,5 +136,32 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.3.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito</artifactId>
+            <!--version>1.0.5</version-->
+            <version>1.0.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito-annotations</artifactId>
+            <version>1.0.9</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>
