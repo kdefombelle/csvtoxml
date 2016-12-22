@@ -21,7 +21,8 @@ public class FormatterRouteBuilder extends RouteBuilder{
                 .bean(freemarkerXmlModelCreator)
                 .to("freemarker:{{template.file}}??contentCache=false")
                 .log("Received order \n${body}")
-                .to("file:{{output.folder}}?charset=UTF-8")
+                //.simple(headers[CamelFileName])
+                .to("file:{{output.folder}}?charset=UTF-8&fileExist=Append") //Override
                 .to("mock:result");
     }
 }

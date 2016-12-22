@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <TradeList>
     <SWAP>
         <TradeId>202292HM</TradeId>
@@ -68,7 +68,7 @@
                 <SsiByEvent>N</SsiByEvent>
                 <CLSSettlement>N</CLSSettlement>
                 <CustomEventRules TYPE="EntList" SINGLE="Y">
-                    <EVNTRULE/>
+                    <EVNTRULE></EVNTRULE>
                 </CustomEventRules>
                 <PreTradeTime>00:00:00</PreTradeTime>
                 <FinancialDataChange>CHANGE</FinancialDataChange>
@@ -5474,7 +5474,7 @@
                 <SsiByEvent>N</SsiByEvent>
                 <CLSSettlement>N</CLSSettlement>
                 <CustomEventRules TYPE="EntList" SINGLE="Y">
-                    <EVNTRULE/>
+                    <EVNTRULE></EVNTRULE>
                 </CustomEventRules>
                 <PreTradeTime>00:00:00</PreTradeTime>
                 <FinancialDataChange>CHANGE</FinancialDataChange>
