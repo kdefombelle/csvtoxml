@@ -16,9 +16,9 @@ public class FormatterRouteBuilder extends RouteBuilder{
 
     @Override
     public void configure() throws Exception {
-        from("file://{{input.folder}}?charset=UTF-8&noop=true").to("direct:start").routeId("RouteReadFiles");
+        from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:processing").routeId("RouteReadFiles");
         
-        from("direct:start").routeId("RouteFormatter")
+        from("seda:processing").threads(5).routeId("RouteFormatter")
                 .log("Processing file [${in.header.CamelFileName}]")
                 .choice()
 	            	.when(simple("'xml' == '{{input.type}}'"))
