@@ -149,7 +149,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	}
 
 	public static void startCommand(OptionSet options) throws Throwable {
-		LOGGER.info("Start Formatter");
+		LOGGER.info("Starting Formatter");
 		FormatterRunner formaterRunner = new FormatterRunner(options);
 		long startTime = System.currentTimeMillis();
 		String port = getPort(options);
@@ -165,7 +165,9 @@ public class FormatterRunner implements FormatterRunnerMBean {
 
 	public static void stopCommand(OptionSet options) throws Throwable {
 		LOGGER.info("Stopping Formatter");
+		long startTime = System.currentTimeMillis();
 		invokeRemoteOperation("stop", getPort(options));
+		LOGGER.info("Formatter stopped in {}", TimeUtils.printDuration(System.currentTimeMillis() - startTime));
 	}
 
 	private static void invokeRemoteOperation(String operation, String port) throws IOException, JMException {

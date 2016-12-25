@@ -1,20 +1,19 @@
 package fr.kdefombelle.formatter;
 
-import freemarker.ext.dom.NodeModel;
-import freemarker.template.TemplateModelException;
-import org.apache.camel.Exchange;
-import org.apache.camel.Handler;
-import org.apache.camel.component.file.GenericFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Handler;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.freemarker.FreemarkerConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author kdefombelle
@@ -26,11 +25,14 @@ public class FreemarkerXmlModelCreator {
 
     @Handler
     public void process(Exchange in) {
-        GenericFile o = in.getIn().getBody(GenericFile.class);
+        GenericFile<File> o = in.getIn().getBody(GenericFile.class);
         logger.info(""+o);
-        Map root = new HashMap();
+        Map<String, Object> root = new HashMap<>();
         try {
-            root.put("xml", freemarker.ext.dom.NodeModel.parse((File)o.getFile()));
+            root.put("xml", freemarker.ext.dom.NodeModel.parse(o.getFile()));
+            root.put("request", in.getIn());
+            root.put("headers", in.getIn().getHeaders());
+            //root.put("body", in.getIn().getBody());
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -38,15 +40,6 @@ public class FreemarkerXmlModelCreator {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        in.getIn().setHeader("CamelFreemarkerDataModel", root);
-//        try {
-//            String tradeId = ((NodeModel) ((NodeModel) root.get("xml")).get("/TradeList/*/TradeId")).getNode().getFirstChild().getTextContent();
-//            in.getIn().setHeader("tradeId", tradeId);
-//            logger.info(""+tradeId);
-//        } catch (TemplateModelException e) {
-//            e.printStackTrace();
-//        }
-
-        in.getIn().setBody(o);
+        in.getIn().setHeader(FreemarkerConstants.FREEMARKER_DATA_MODEL, root);
     }
 }
