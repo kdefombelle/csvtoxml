@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.12</slf4j.version>
 		<camel.version>2.18.1</camel.version>
-		<spring.version>4.3.4.RELEASE</spring.version>
+		<spring.version>4.3.5.RELEASE</spring.version>
 	</properties>
 
 	<build>
