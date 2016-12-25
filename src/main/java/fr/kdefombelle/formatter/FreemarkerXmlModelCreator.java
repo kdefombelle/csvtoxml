@@ -18,7 +18,6 @@ import org.xml.sax.SAXException;
 /**
  * @author kdefombelle
  */
-
 public class FreemarkerXmlModelCreator {
 
     private Logger logger = LoggerFactory.getLogger(FreemarkerXmlModelCreator.class);

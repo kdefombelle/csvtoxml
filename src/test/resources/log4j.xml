@@ -16,14 +16,19 @@
 		</layout>
 	</appender>
 
-	<logger name="org.apache.camel" additivity="true">
+	<logger name="org.apache.camel">
 		<level value="info" />
 	</logger>
 
-	<logger name="fr.kdefombelle" additivity="true">
+	<logger name="fr.kdefombelle.formatter">
 		<level value="debug" />
 	</logger>
 
+	<!--route id Formatter to set log level -->
+	<logger name="Formatter">
+		<level value="debug" />
+	</logger>
+	
 	<root>
 		<level value="INFO" />
 		<appender-ref ref="console" />

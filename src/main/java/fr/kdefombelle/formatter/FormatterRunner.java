@@ -56,6 +56,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	private final CountDownLatch shutdownLatch = new CountDownLatch(1);
 	// private final String objectName;
 	private Agent agent;
+	private ApplicationContext context;
 
 	private FormatterRunner(OptionSet options) throws Throwable {
 		String host = getHost(options);
@@ -63,7 +64,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 		String jmxUrl = new JmxUrlBuilder().setHost(host).setRmiRegistryPort(port).build();
 		LOGGER.debug("JMX URL created {}", jmxUrl);
 		agent = new SimpleAgent(jmxUrl, new HashMap<>(), new ObjectNameFactory(JMX_DOMAIN));
-		agent.registerMBean(this,"formatter",port);
+		agent.registerMBean(this, "formatter", port);
 		LOGGER.info("Initializing formatter {}:{}", host, port);
 	}
 
@@ -105,26 +106,25 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	public void startJmxConnector() {
 		agent.startJmxConnector();
 	}
-	
+
 	public static void main(String[] args) throws Throwable {
 		OptionParser parser = new OptionParser();
 		List<String> helpOptions = Arrays.asList(OPT_HELP, OPT_HELP_SHORT);
 		OptionSpec<?> help = parser.acceptsAll(helpOptions, "print this help message").withOptionalArg();
 
 		List<String> jmxPortOptions = Arrays.asList(OPT_JMX_PORT, OPT_JMX_PORT_SHORT);
-		OptionSpec<String> port = parser.acceptsAll(jmxPortOptions, "jmx port").withOptionalArg()
-				.ofType(String.class);
+		OptionSpec<String> port = parser.acceptsAll(jmxPortOptions, "jmx port").withOptionalArg().ofType(String.class);
 
 		List<String> commandOptions = Arrays.asList(OPT_COMMAND, OPT_COMMAND_SHORT);
 		OptionSpec<String> commandOption = parser.acceptsAll(commandOptions, "command start/stop").withRequiredArg()
 				.ofType(String.class);
-		
+
 		List<String> hostOptions = Arrays.asList(OPT_JMX_HOST, OPT_JMX_HOST_SHORT);
 		OptionSpec<String> hostOption = parser.acceptsAll(hostOptions, "host name").withRequiredArg()
 				.ofType(String.class);
-		
+
 		OptionSet options = parser.parse(args);
-		LOGGER.info("Parsing options...{}", options.asMap());
+		LOGGER.debug("Parsing options...{}", options.asMap());
 
 		if (options.has(help)) {
 			// print help and exit
@@ -136,7 +136,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 				return;
 			}
 		}
-		
+
 		String command = options.valueOf(commandOption);
 		if ("start".equals(command)) {
 			startCommand(options);
@@ -155,10 +155,9 @@ public class FormatterRunner implements FormatterRunnerMBean {
 		String port = getPort(options);
 		LocateRegistry.createRegistry(Integer.parseInt(port));
 		formaterRunner.startJmxConnector();
-		
+
 		invokeRemoteOperation("start", getPort(options));
-	
-		//invokeRemoteOperation("start", formatterMain.getPort(options));
+
 		LOGGER.info("Formatter started in {}", TimeUtils.printDuration(System.currentTimeMillis() - startTime));
 		formaterRunner.awaitShutdown();
 	}
@@ -167,6 +166,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 		LOGGER.info("Stopping Formatter");
 		long startTime = System.currentTimeMillis();
 		invokeRemoteOperation("stop", getPort(options));
+		//TODO: ensure stop is completed to handle properly camel context auto startup false
 		LOGGER.info("Formatter stopped in {}", TimeUtils.printDuration(System.currentTimeMillis() - startTime));
 	}
 
@@ -179,25 +179,26 @@ public class FormatterRunner implements FormatterRunnerMBean {
 		JMXServiceURL jmxUrl = new JmxUrlBuilder().setHost(getHost()).setRmiRegistryPort(port).buildUrl();
 		JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl, null);
 		MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-		LOGGER.debug("Object name {}",getObjectName(port));
-		ObjectName runnerObjectName = new ObjectNameFactory(JMX_DOMAIN).createObjectName("formatter",port);
-		return mbsc.invoke(runnerObjectName, operation, params,
-				signature);
+		LOGGER.debug("Object name {}", getObjectName(port));
+		ObjectName runnerObjectName = new ObjectNameFactory(JMX_DOMAIN).createObjectName("formatter", port);
+		return mbsc.invoke(runnerObjectName, operation, params, signature);
 	}
 
+	@Override
 	public void start() {
-		LOGGER.debug("Starting Formatter");
-		ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/spring/spring.xml");
+		context = new ClassPathXmlApplicationContext("META-INF/spring/spring.xml");
 		Formatter formatter = context.getBean(Formatter.class);
 		formatter.start();
 	}
 
+	@Override
 	public void stop() {
 		try {
+			Formatter formatter = context.getBean(Formatter.class);
+			formatter.stop();
 			agent.stopJmxConnector();
 		} finally {
 			shutdownLatch.countDown();
 		}
-		LOGGER.debug("Stopping Formatter");
 	}
 }

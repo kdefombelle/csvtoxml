@@ -16,13 +16,23 @@ public class Formatter {
     private CamelContext camelContext;
 
     public void start(){
-        logger.debug("Formatter starting isCamelAutoStartup {}",camelContext.isAutoStartup());
-//        try {
-//        	camelContext.start();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//			e.printStackTrace();
-//		}
+        logger.debug("{} starting isCamelAutoStartup {}",Formatter.class.getSimpleName(), camelContext.isAutoStartup());
+        try {
+        	camelContext.start();
+        	camelContext.startAllRoutes();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void stop(){
+    	logger.debug("{} stopping", Formatter.class.getSimpleName());
+    	try {
+			camelContext.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }

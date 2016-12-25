@@ -11,7 +11,7 @@
         <property name="location" value="formatter.properties"/>
     </bean>
 
-    <camel:camelContext id="camelContext" autoStartup="true">
+    <camel:camelContext id="camelContext" autoStartup="false">
         <camel:routeBuilder ref="formatterRouteBuilder" />
     </camel:camelContext>
 
