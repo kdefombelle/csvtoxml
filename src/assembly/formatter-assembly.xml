@@ -14,10 +14,6 @@
 			<outputDirectory></outputDirectory>
 		</file>
 		<file>
-			<source>${project.basedir}/src/test/resources/formatter.properties</source>
-			<outputDirectory>conf</outputDirectory>
-		</file>
-		<file>
 			<source>${project.build.directory}/formatter/bin/formatter.sh</source>
 			<outputDirectory>bin</outputDirectory>
 			<fileMode>0755</fileMode>
@@ -34,17 +30,13 @@
 			<outputDirectory>jar</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.basedir}/src/test/resources/template</directory>
-			<outputDirectory>conf/template</outputDirectory>
-			<lineEnding>unix</lineEnding>
-		</fileSet>
-		<fileSet>
-			<directory>${project.basedir}/src/test/resources/input</directory>
+			<directory>${project.basedir}/src/assembly/input</directory>
 			<outputDirectory>input</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.basedir}/src/main/conf</directory>
+			<directory>${project.basedir}/src/assembly/conf</directory>
 			<outputDirectory>conf</outputDirectory>
+			<lineEnding>unix</lineEnding>
 		</fileSet>
 	</fileSets>
 </assembly>
