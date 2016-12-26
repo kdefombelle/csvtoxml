@@ -1,15 +1,11 @@
 package fr.kdefombelle.formatter;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
-import org.apache.camel.builder.Builder;
-import org.apache.camel.builder.NotifyBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringRunner;
 import org.junit.Before;
