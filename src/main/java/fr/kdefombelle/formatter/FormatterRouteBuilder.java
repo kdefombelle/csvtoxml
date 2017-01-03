@@ -21,15 +21,18 @@ public class FormatterRouteBuilder extends RouteBuilder{
     public void configure() throws Exception {
         from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:processing").routeId("RouteReadFiles");
         
-        from("seda:processing").threads(5).routeId(ROUTE_FORMATTER)
+        from("seda:processing").routeId(ROUTE_FORMATTER)
                 .log("Processing file [${in.header.CamelFileName}]")
                 .choice()
 	            	.when(simple("'xml' == '{{input.type}}'"))
-	                	.bean(freemarkerXmlModelCreator).id("ModelCreator")
+	            		.split().tokenizeXML(simple("{{input.xml.split}}").getText()).streaming()
+	            		.threads(5)
+	            		.bean(freemarkerXmlModelCreator).id("ModelCreator")
 		                .to("freemarker:{{template.file}}")
 		                .choice()
 		                	.when(simple("'append' == '{{output.mode}}'"))
 		                		.log(LoggingLevel.DEBUG,"Formatter configured in [{{output.mode}}] mode")
+		                		.log("TradeId [${in.header.TradeId}]")
 			                	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("report.{{output.extension}}"))
 				                .to("file:{{output.folder}}?charset=UTF-8&fileExist=Append")
 				            .when(simple("'override' == '{{output.mode}}'"))

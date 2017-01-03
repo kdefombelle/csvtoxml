@@ -1,3 +1,3 @@
-<#assign tradeId=xml.TradeList.SWAP[0].TradeId/>
+<#assign tradeId=xml.SWAP.TradeId/>
 ${request.setHeader('TradeId', tradeId?replace("TradeId", ""))}
-${tradeId},${xml.TradeList.SWAP[0].Assets.ASSET[0].dmAssetId},${xml.TradeList.SWAP[0].Assets.ASSET[1].dmAssetId}
+${xml["/SWAP/Env/ENV/Cust"]},${xml["/SWAP/Env/ENV/Book"]},${xml["/SWAP/TradeId"]},${xml["/SWAP/Assets/ASSET[1]/dmAssetId"]},${xml["/SWAP/Assets/ASSET[2]/dmAssetId"]},${xml["/SWAP/Env/ENV/TradeDate"]},${xml["/SWAP/Assets/ASSET[1]/PorS"]},${xml["/SWAP/Assets/ASSET[1]/EffDate"]},${xml["/SWAP/Assets/ASSET[1]/MatDate"]},${xml["/SWAP/Assets/ASSET[1]/Notional"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_FixFloat"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_FixFloat"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Ccy"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_Ccy"]}

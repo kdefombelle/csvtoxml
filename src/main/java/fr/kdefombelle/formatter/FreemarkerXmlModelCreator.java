@@ -1,7 +1,7 @@
 package fr.kdefombelle.formatter;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +24,10 @@ public class FreemarkerXmlModelCreator {
 
     @Handler
     public void process(Exchange in) {
-    	InputStream o = in.getIn().getBody(InputStream.class);
-        logger.info(""+o);
+    	Reader i = in.getIn().getBody(Reader.class);
         Map<String, Object> root = new HashMap<>();
         try {
-            InputSource is = new InputSource(o);
+            InputSource is = new InputSource(i);
 			root.put("xml", freemarker.ext.dom.NodeModel.parse(is));
             root.put("request", in.getIn());
             root.put("headers", in.getIn().getHeaders());
