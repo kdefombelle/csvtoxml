@@ -19,14 +19,16 @@ public class FormatterRouteBuilder extends RouteBuilder{
 
     @Override
     public void configure() throws Exception {
-        from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:processing").routeId("RouteReadFiles");
+        onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
+    	
+    	from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:processing").routeId("RouteReadFiles");
         
-        from("seda:processing").routeId(ROUTE_FORMATTER)
-                .log("Processing file [${in.header.CamelFileName}]")
+        from("seda:processing").routeId(ROUTE_FORMATTER)           
+        		.log("Processing file [${in.header.CamelFileName}]")
                 .choice()
 	            	.when(simple("'xml' == '{{input.type}}'"))
 	            		.split().tokenizeXML(simple("{{input.xml.split}}").getText()).streaming()
-	            		.threads(5)
+	            		.threads(20)
 	            		.bean(freemarkerXmlModelCreator).id("ModelCreator")
 		                .to("freemarker:{{template.file}}")
 		                .choice()
@@ -42,5 +44,6 @@ public class FormatterRouteBuilder extends RouteBuilder{
 			                	.to("file:{{output.folder}}?charset=UTF-8&fileExist=Override")
 			        		.otherwise().throwException(new IllegalStateException("output mode not supported"))
         			.otherwise().throwException(new IllegalStateException("input.type not supported"));
+        
     }
 }

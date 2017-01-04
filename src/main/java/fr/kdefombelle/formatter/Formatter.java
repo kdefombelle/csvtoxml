@@ -1,7 +1,6 @@
 package fr.kdefombelle.formatter;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ public class Formatter {
     public void start(){
         logger.debug("{} starting isCamelAutoStartup {}",Formatter.class.getSimpleName(), camelContext.isAutoStartup());
         try {
-//        	System.setProperty(Exchange.DEFAULT_CHARSET_PROPERTY, "UTF-8");
         	camelContext.start();
         	camelContext.startAllRoutes();
         } catch (InterruptedException e) {
