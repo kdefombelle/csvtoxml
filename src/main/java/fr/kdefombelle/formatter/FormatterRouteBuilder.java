@@ -27,6 +27,7 @@ public class FormatterRouteBuilder extends RouteBuilder{
         		.log("Processing file [${in.header.CamelFileName}]")
                 .choice()
 	            	.when(simple("'xml' == '{{input.type}}'"))
+	            		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
 	            		.split().tokenizeXML(simple("{{input.xml.split}}").getText()).streaming()
 	            		.threads(20)
 	            		.bean(freemarkerXmlModelCreator).id("ModelCreator")
