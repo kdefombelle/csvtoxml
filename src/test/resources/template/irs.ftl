@@ -1,3 +1,31 @@
-<#assign tradeId=xml.SWAP.TradeId/>
+<#assign tradeId=xml["/SWAP/TradeId"]/>
 ${request.setHeader('TradeId', tradeId?replace("TradeId", ""))}
-${xml["/SWAP/Env/ENV/Cust"]},${xml["/SWAP/Env/ENV/Book"]},${xml["/SWAP/TradeId"]},${xml["/SWAP/Assets/ASSET[1]/dmAssetId"]},${xml["/SWAP/Assets/ASSET[2]/dmAssetId"]},${xml["/SWAP/Env/ENV/TradeDate"]},${xml["/SWAP/Assets/ASSET[1]/PorS"]},${xml["/SWAP/Assets/ASSET[1]/EffDate"]},${xml["/SWAP/Assets/ASSET[1]/MatDate"]},${xml["/SWAP/Assets/ASSET[1]/Notional"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_FixFloat"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_FixFloat"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Ccy"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_Ccy"]}
+<@compress single_line=true>
+${xml["/SWAP/TradeId"]},
+${xml["/SWAP/Env/ENV/Cust"]},
+${xml["/SWAP/Env/ENV/Book"]},
+${xml["/SWAP/Env/ENV/Desk"]},
+${xml["/SWAP/Env/ENV/TradeDate"]},
+${xml["/SWAP/Assets/ASSET[1]/PorS"]},
+${xml["/SWAP/Assets/ASSET[1]/EffDate"]},
+${xml["/SWAP/Assets/ASSET[1]/MatDate"]},
+${xml["/SWAP/Assets/ASSET[1]/Notional"]},
+<#if xml["/SWAP/Assets/ASSET[1]/STUB_Date1[1]"]?has_content>${xml["/SWAP/Assets/ASSET[1]/STUB_Date1"]}</#if>,
+<#if xml["/SWAP/Assets/ASSET[1]/STUB_Date2"]?has_content>${xml["/SWAP/Assets/ASSET[1]/STUB_Date2[1]"]}</#if>,
+${xml["/SWAP/Assets/ASSET[1]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Basis"]},
+${xml["/SWAP/Assets/ASSET[1]/INTEREST_FixFloat"]},${xml["/SWAP/Assets/ASSET[1]/INTEREST_Ccy"]},
+${xml["/SWAP/Assets/ASSET[1]/INTEREST_dmIndex"]},
+<#if xml["/SWAP/Assets/ASSET[1]/INTEREST_Term[1]"]?has_content>${xml["/SWAP/Assets/ASSET[1]/INTEREST_Term"]}</#if>,
+${xml["/SWAP/Assets/ASSET[1]/SCHED_Pay_Freq"]},
+<#if xml["/SWAP/Assets/ASSET[1]/SCHED_Reset_Rule[1]"]?has_content>${xml["/SWAP/Assets/ASSET[1]/SCHED_Reset_Rule"]}</#if>,
+<#if xml["SWAP/Assets/ASSET[1]/SCHED_Reset_Gap[1]"]?has_content>${xml["SWAP/Assets/ASSET[1]/SCHED_Reset_Gap"]}</#if>,
+<#if xml["/SWAP/Assets/ASSET[2]/STUB_Date1[1]"]?has_content>${xml["/SWAP/Assets/ASSET[2]/STUB_Date1"]}</#if>,
+<#if xml["/SWAP/Assets/ASSET[2]/STUB_Date2[1]"]?has_content>${xml["/SWAP/Assets/ASSET[2]/STUB_Date2"]}</#if>,
+${xml["/SWAP/Assets/ASSET[2]/INTEREST_Rate"]},${xml["/SWAP/Assets/ASSET[2]/INTEREST_Basis"]},
+${xml["/SWAP/Assets/ASSET[2]/INTEREST_FixFloat"]},
+${xml["/SWAP/Assets/ASSET[2]/INTEREST_Ccy"]},
+<#if xml["/SWAP/Assets/ASSET[2]/INTEREST_Term[1]"]?has_content>${xml["/SWAP/Assets/ASSET[2]/INTEREST_Term"]}</#if>,
+${xml["/SWAP/Assets/ASSET[2]/INTEREST_dmIndex"]},${xml["/SWAP/Assets/ASSET[2]/SCHED_Pay_Freq"]},
+<#if xml["/SWAP/Assets/ASSET[2]/SCHED_Reset_Rule[1]"]?has_content>${xml["/SWAP/Assets/ASSET[2]/SCHED_Reset_Rule"]}</#if>,
+<#if xml["SWAP/Assets/ASSET[2]/SCHED_Reset_Gap[1]"]?has_content>${xml["SWAP/Assets/ASSET[2]/SCHED_Reset_Gap"]}</#if>
+</@compress>
