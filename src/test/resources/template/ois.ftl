@@ -87,9 +87,9 @@ ${asset.SCHED_Pay_Freq},
 <#if asset.STUB_EndCal[0]??>${asset.STUB_EndCal}</#if>,
 <#if asset.LoanRate[0]??>${asset.LoanRate}</#if>,
 <#if asset.INTEREST_IntRateType[0]??>${asset.INTEREST_IntRateType}</#if>,
-<#if asset.INT_RES_AdjPayment[0]??>${asset.INT_RES_AdjPayment}</#if>,
+<#if asset.INT_RES_AdjPayment[0]??>${asset.INT_RES_AdjPayment}</#if>
 <#-- cashflows -->
-<#list asset.SCHEDULE.Row as flow>${flow.Start};${flow.End};<#if flow.Fixing[0]??>${flow.Fixing}</#if>;${flow.Spread};${flow.Notional};${flow.Date}<#sep>|</#sep></#list>
-<#sep>,</#sep>
+<#-- #list asset.SCHEDULE.Row as flow>${flow.Start};${flow.End};<#if flow.Fixing[0]??>${flow.Fixing}</#if>;${flow.Spread};${flow.Notional};${flow.Date}<#sep>|</#sep></#list>
+<#sep>,</#sep-->
 </#list>
 </@compress>
