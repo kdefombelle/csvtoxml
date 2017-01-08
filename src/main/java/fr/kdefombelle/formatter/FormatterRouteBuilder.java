@@ -24,7 +24,8 @@ public class FormatterRouteBuilder extends RouteBuilder{
     public void configure() throws Exception {
         onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
     	
-    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true").to("seda:splixml").routeId(ROUTE_READ_INPUT_SPLIT_XML);
+    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true").routeId(ROUTE_READ_INPUT_SPLIT_XML)
+    	.to("seda:splitxml");
     	
 		from("seda:splitxml").routeId(ROUTE_SPLIT_XML)	
     	//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
