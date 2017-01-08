@@ -10,7 +10,7 @@
 	</appender>
 
 	<appender name="file" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="logs/xmlcompare.log" />
+		<param name="File" value="logs/formatter.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %-5p [%t] %c{1} - %m%n" />
 		</layout>
@@ -25,14 +25,26 @@
 	</logger>
 
 	<!--route id Formatter to set log level -->
-	<logger name="Formatter">
+	<logger name="RouteReadXmlFilesSplit">
+		<level value="info" />
+	</logger>
+	
+	<logger name="RouteSplitXmlFiles">
+		<level value="info" />
+	</logger>
+	
+	<logger name="RouteReadFilesFormatter">
+		<level value="info" />
+	</logger>
+	
+	<logger name="RouteFormatter">
 		<level value="info" />
 	</logger>
 	
 	<root>
 		<level value="INFO" />
 		<appender-ref ref="console" />
-		<!--appender-ref ref="file" /-->
+		<appender-ref ref="file" />
 	</root>
 
 </log4j:configuration>
