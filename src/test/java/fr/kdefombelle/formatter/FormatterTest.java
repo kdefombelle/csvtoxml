@@ -21,7 +21,7 @@ import fr.kdefombelle.junit.FileResourcesRule;
 @RunWith(CamelSpringRunner.class)
 // @BootstrapWith(CamelTestContextBootstrapper.class)
 @ContextConfiguration({ "classpath:META-INF/spring/spring.xml" })
-//@UseAdviceWith instructs test to not start camel contextas some advise should be placed first
+//@UseAdviceWith instructs test to not start camel context as some advise should be placed first
 //not needed in this program as camel context is not autostarted.
 public class FormatterTest {
 
@@ -51,15 +51,16 @@ public class FormatterTest {
 	}
 
 	@Test
-	@FileResources(files = "input/irs/BO_IRS_INC.XML")
+	@FileResources(files = "input/irs/split/BO_IRS_INC.XML")
 	public void testSendMatchingMessage() throws Exception {
 		String irsXml = files.read(0);
 		resultEndpoint.expectedMessageCount(1);
 //		NotifyBuildernotify = new NotifyBuilder(camelContext).fromRoute(FormatterRouteBuilder.ROUTE_FORMATTER)
 //				.whenAnyDoneMatches(Builder.header(Exchange.OVERRULE_FILE_NAME).contains("202292HM")).create();
-		camelContext.startRoute("RouteFormatter");
-
-		template.sendBodyAndHeader("seda:processing", irsXml, Exchange.FILE_NAME, "BO_IRS_INC.XML");
+		camelContext.startRoute(FormatterRouteBuilder.ROUTE_SPLIT_XML);
+		camelContext.startRoute(FormatterRouteBuilder.ROUTE_READ_INPUT_FORMATTER);
+		camelContext.startRoute(FormatterRouteBuilder.ROUTE_FORMATTER);
+		template.sendBodyAndHeader("seda:splitxml", irsXml, Exchange.FILE_NAME, "BO_IRS_INC.XML");
 
 //		assertTrue(notify.matches());
 		resultEndpoint.assertIsSatisfied();

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class FormatterRouteBuilder extends RouteBuilder{
 
+	public static String ROUTE_READ_INPUT_SPLIT_XML="RouteReadXmlFilesSplit";
+	public static String ROUTE_SPLIT_XML="RouteSplitXmlFiles";
+	public static String ROUTE_READ_INPUT_FORMATTER="RouteReadFilesFormatter";
 	public static String ROUTE_FORMATTER="RouteFormatter";
 	
     @Autowired
@@ -21,7 +24,9 @@ public class FormatterRouteBuilder extends RouteBuilder{
     public void configure() throws Exception {
         onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
     	
-    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true").routeId("RouteReadSplitFiles")
+    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true").to("seda:splixml").routeId(ROUTE_READ_INPUT_SPLIT_XML);
+    	
+		from("seda:splitxml").routeId(ROUTE_SPLIT_XML)	
     	//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
     	.split().tokenizeXML(simple("{{input.xml.split.element}}").getText()).streaming()
     	.threads(20)
@@ -30,9 +35,9 @@ public class FormatterRouteBuilder extends RouteBuilder{
        	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${in.header.TradeId}.xml"))
     	.to("file://{{output.xml.split.folder}}?charset=UTF-8&fileExist=Override");
     	
-    	from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:processing").routeId("RouteReadInputFiles");
+    	from("file://{{input.folder}}?charset=UTF-8&noop=true").to("seda:formatter").routeId(ROUTE_READ_INPUT_FORMATTER);
 	
-		from("seda:processing").routeId(ROUTE_FORMATTER)           
+		from("seda:formatter").routeId(ROUTE_FORMATTER)           
     	.log("Processing file [${in.header.CamelFileName}]")
     	.threads(20)
         .choice()
