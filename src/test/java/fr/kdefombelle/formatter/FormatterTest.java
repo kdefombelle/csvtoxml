@@ -54,7 +54,7 @@ public class FormatterTest {
 	@FileResources(files = "input/irs/split/BO_IRS_INC.XML")
 	public void testSendMatchingMessage() throws Exception {
 		String irsXml = files.read(0);
-		resultEndpoint.expectedMessageCount(1);
+		resultEndpoint.expectedMessageCount(2);
 //		NotifyBuildernotify = new NotifyBuilder(camelContext).fromRoute(FormatterRouteBuilder.ROUTE_FORMATTER)
 //				.whenAnyDoneMatches(Builder.header(Exchange.OVERRULE_FILE_NAME).contains("202292HM")).create();
 		camelContext.startRoute(FormatterRouteBuilder.ROUTE_SPLIT_XML);
