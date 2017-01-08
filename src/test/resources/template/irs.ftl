@@ -1,5 +1,4 @@
-<#assign tradeId=xml["/SWAP/TradeId"]/>
-${request.setHeader('TradeId', tradeId?replace("TradeId", ""))}
+${request.setHeader('TradeId', xml["/SWAP/TradeId/text()"])}
 <@compress single_line=true>
 <#--  general -->
 ${xml["/SWAP/TradeId"]},
