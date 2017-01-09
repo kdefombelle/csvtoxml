@@ -32,7 +32,7 @@ public class FormatterRouteBuilder extends RouteBuilder{
     	.split().tokenizeXML(simple("{{input.xml.split.element}}").getText()).streaming()
     	.threads(20)
     	.setHeader("TradeId").xpath("/{{input.xml.split.element}}/TradeId/text()")
-       	.log("TradeId [${in.header.TradeId}] mode")
+       	.log("TradeId [${in.header.TradeId}]")
        	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${in.header.TradeId}.xml"))
     	.to("file://{{output.xml.split.folder}}?charset=UTF-8&fileExist=Override");
     	
