@@ -1,7 +1,5 @@
 package fr.kdefombelle.formatter;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.Processor;
@@ -66,7 +64,7 @@ public class FormatterRouteBuilder extends RouteBuilder{
 			                .process(new Processor(){
 								@Override
 								public void process(Exchange exchange) throws Exception {
-									log.info("TradeId {} [{}] transformed",exchange.getIn().getHeader("TradeId"),counter++);
+									log.info("TradeId {} [{}] transformed",exchange.getIn().getHeader("TradeId"),++counter);
 								}
 		               		})
 			             .when(simple("'override' == '{{output.mode}}'"))
