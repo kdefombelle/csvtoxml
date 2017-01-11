@@ -1,8 +1,8 @@
-<#assign tradeId=xml["/SWAP/TradeId"]/>
-${request.setHeader('TradeId', tradeId?replace("TradeId", ""))}
+${request.setHeader('TradeId', xml["/SWAP/TradeId/text()"])}
 <@compress single_line=true>
 <#--  general -->
 ${xml["/SWAP/TradeId"]},
+${xml["/SWAP/TradeType"]},
 ${xml["/SWAP/Env/ENV/Book"]},
 ${xml["/SWAP/Env/ENV/Desk"]},
 ${xml["/SWAP/Env/ENV/Cust"]},
@@ -12,6 +12,7 @@ ${xml["/SWAP/Env/ENV/TradeDate"]},
 <#--  swap specific -->
 <#list xml["/SWAP/Assets/ASSET"] as asset>
 <#assign test=asset?counter>
+${asset.SubType},
 ${asset.PorS},
 ${asset.MatDate},
 ${asset.EffDate},
@@ -23,8 +24,9 @@ ${asset.Ccy},
 <#if asset.STUB_Date2[0]??>${asset.STUB_Date2}</#if>,
 <#if asset.STUB_Rate2[0]??>${asset.STUB_Rate2}</#if>,
 <#if asset.STUB_Decomp[0]??>${asset.STUB_Decomp}</#if>,
-<#if asset.ResetInStub[0]??>${asset.INTEREST_FixFloat}</#if>,
+<#if asset.ResetInStub[0]??>${asset.ResetInStub}</#if>,
 <#--  interest section -->
+<#if asset.INTEREST_FixFloat[0]??>${asset.INTEREST_FixFloat}</#if>,
 <#if asset.INTEREST_Rate[0]??>${asset.INTEREST_Rate}</#if>,
 <#if asset.INTEREST_Basis[0]??>${asset.INTEREST_Basis}</#if>,
 <#if asset.INTEREST_dmIndex[0]??>${asset.INTEREST_dmIndex}</#if>,
@@ -89,7 +91,7 @@ ${asset.SCHED_Pay_Freq},
 <#if asset.INTEREST_IntRateType[0]??>${asset.INTEREST_IntRateType}</#if>,
 <#if asset.INT_RES_AdjPayment[0]??>${asset.INT_RES_AdjPayment}</#if>
 <#-- cashflows -->
-<#-- #list asset.SCHEDULE.Row as flow>${flow.Start};${flow.End};<#if flow.Fixing[0]??>${flow.Fixing}</#if>;${flow.Spread};${flow.Notional};${flow.Date}<#sep>|</#sep></#list>
-<#sep>,</#sep-->
+<#--#list asset.SCHEDULE.Row as flow>${flow.Start};${flow.End};<#if flow.Fixing[0]??>${flow.Fixing}</#if>;${flow.Spread};${flow.Notional};${flow.Date}<#sep>|</#sep></#list-->
+<#sep>,</#sep>
 </#list>
 </@compress>
