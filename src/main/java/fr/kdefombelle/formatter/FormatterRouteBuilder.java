@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,17 +23,19 @@ public class FormatterRouteBuilder extends RouteBuilder{
     @Autowired
     private FreemarkerXmlModelCreator freemarkerXmlModelCreator = new FreemarkerXmlModelCreator();
 
+    static volatile int counter=0;
+
     @Override
     public void configure() throws Exception {
         onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
-    	
     	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true")
     	.routeId(ROUTE_READ_INPUT_SPLIT_XML)
-    	.log("File to split[${in.header.CamelFileName}]")
+    	.log("File [${in.header.CamelFileName}] will be split")
     	.to("seda:splitxml");
     	
 		from("seda:splitxml")
-		.routeId(ROUTE_SPLIT_XML)	
+		.routeId(ROUTE_SPLIT_XML)
+		.log("Splitting file [${in.header.CamelFileName}]")
 		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
     	.split().tokenizeXML(simple("{{input.xml.split.element}}").getText()).streaming()
     	.threads(20)
@@ -58,10 +61,15 @@ public class FormatterRouteBuilder extends RouteBuilder{
 		        .choice()
 		               	.when(simple("'append' == '{{output.mode}}'"))
 		               		.log(LoggingLevel.DEBUG,"Formatter configured in [{{output.mode}}] mode")
-		               		.log("TradeId [${in.header.TradeId}]")
 			               	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("report.{{output.extension}}"))
 			                .to("file:{{output.folder}}?charset=UTF-8&fileExist=Append")
-			        .when(simple("'override' == '{{output.mode}}'"))
+			                .process(new Processor(){
+								@Override
+								public void process(Exchange exchange) throws Exception {
+									log.info("TradeId {} [{}] transformed",exchange.getIn().getHeader("TradeId"),counter++);
+								}
+		               		})
+			             .when(simple("'override' == '{{output.mode}}'"))
 			               	.log(LoggingLevel.DEBUG,"Formatter configured in [{{output.mode}}] mode")
 			               	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${headers.tradeId}.{{output.extension}}"))
 			               	.log("TradeId [${in.header.TradeId}]")
