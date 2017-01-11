@@ -51,7 +51,7 @@ public class FormatterTest {
 	}
 
 	@Test
-	@FileResources(files = "input/irs/split/BO_IRS_INC.XML")
+	@FileResources(files = "input/split/BO_IRS_INC.XML")
 	public void testSendMatchingMessage() throws Exception {
 		String irsXml = files.read(0);
 		resultEndpoint.expectedMessageCount(2);

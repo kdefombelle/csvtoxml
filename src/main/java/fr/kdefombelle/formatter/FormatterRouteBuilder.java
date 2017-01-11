@@ -1,5 +1,7 @@
 package fr.kdefombelle.formatter;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
@@ -24,24 +26,29 @@ public class FormatterRouteBuilder extends RouteBuilder{
     public void configure() throws Exception {
         onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
     	
-    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true").routeId(ROUTE_READ_INPUT_SPLIT_XML)
+    	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true")
+    	.routeId(ROUTE_READ_INPUT_SPLIT_XML)
     	.log("File to split[${in.header.CamelFileName}]")
     	.to("seda:splitxml");
     	
-		from("seda:splitxml").routeId(ROUTE_SPLIT_XML)	
+		from("seda:splitxml")
+		.routeId(ROUTE_SPLIT_XML)	
 		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
     	.split().tokenizeXML(simple("{{input.xml.split.element}}").getText()).streaming()
     	.threads(20)
     	.setHeader("TradeId").xpath("/{{input.xml.split.element}}/TradeId/text()")
-       	.log("TradeId [${in.header.TradeId}] split")
+       	//TODO:add a counter
        	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${in.header.TradeId}.xml"))
-    	.to("file://{{output.xml.split.folder}}?charset=UTF-8&fileExist=Override&doneFileName=${file:name}.done");
+    	.to("file://{{output.xml.split.folder}}?charset=UTF-8&fileExist=Override");
     	
-    	from("file://{{input.folder}}?charset=UTF-8&noop=true&doneFileName=${file:name}.done&idempotentRepository=#fileStore").to("seda:formatter").routeId(ROUTE_READ_INPUT_FORMATTER);
+    	from("file://{{input.folder}}?charset=UTF-8&idempotentRepository=#fileStore")
+    	.routeId(ROUTE_READ_INPUT_FORMATTER)
+    	.to("seda:formatter");
 	
-		from("seda:formatter").routeId(ROUTE_FORMATTER)           
+		from("seda:formatter")
+		.routeId(ROUTE_FORMATTER)           
     	.log("Transforming file [${in.header.CamelFileName}]")
-    	.threads(20)
+    	.threads(15)
         .choice()
 	        .when(simple("'xml' == '{{input.type}}'"))
 	       		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
