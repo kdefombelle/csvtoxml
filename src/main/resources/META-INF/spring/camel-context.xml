@@ -19,16 +19,6 @@
 	<bean id="formatterRouteBuilder" class="fr.kdefombelle.formatter.FormatterRouteBuilder" />
 	<bean id="formatterXmlModelCreator" class="fr.kdefombelle.formatter.FreemarkerXmlModelCreator" />
 
-	<bean id="fileStore" class="org.apache.camel.processor.idempotent.FileIdempotentRepository">
-		<!-- the filename for the store -->
-		<property name="fileStore" value="target/fileidempotent/.filestore.dat" />
-		<!-- the max filesize in bytes for the file. Camel will trunk and flush 
-			the cache if the file gets bigger -->
-		<property name="maxFileStoreSize" value="512000" />
-		<!-- the number of elements in our store -->
-		<property name="cacheSize" value="7000" />
-	</bean>
-
 	<!--constructor-arg index="0" value="${murex.reporting.user}" / -->
 
 </beans>

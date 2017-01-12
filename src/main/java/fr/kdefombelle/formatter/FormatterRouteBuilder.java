@@ -28,7 +28,7 @@ public class FormatterRouteBuilder extends RouteBuilder{
         onException(Exception.class).log("Exception TradeId [${in.header.TradeId}]");
     	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true")
     	.routeId(ROUTE_READ_INPUT_SPLIT_XML)
-    	.log("File [${in.header.CamelFileName}] will be split")
+    	.log("File [${in.header.CamelFileName}] read for split")
     	.to("seda:splitxml");
     	
 		from("seda:splitxml")
@@ -42,14 +42,15 @@ public class FormatterRouteBuilder extends RouteBuilder{
        	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${in.header.TradeId}.xml"))
     	.to("file://{{output.xml.split.folder}}?charset=UTF-8&fileExist=Override");
     	
-    	from("file://{{input.folder}}?charset=UTF-8&idempotentRepository=#fileStore")
+    	from("file://{{input.folder}}?charset=UTF-8&preMove=processing")
     	.routeId(ROUTE_READ_INPUT_FORMATTER)
+    	.log("File [${in.header.CamelFileName}] read for transformation")
     	.to("seda:formatter");
 	
 		from("seda:formatter")
 		.routeId(ROUTE_FORMATTER)           
     	.log("Transforming file [${in.header.CamelFileName}]")
-    	.threads(15)
+    	.threads(20)
         .choice()
 	        .when(simple("'xml' == '{{input.type}}'"))
 	       		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
