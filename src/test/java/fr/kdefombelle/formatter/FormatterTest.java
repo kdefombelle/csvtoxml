@@ -60,7 +60,7 @@ public class FormatterTest {
 		camelContext.startRoute(FormatterRouteBuilder.ROUTE_SPLIT_XML);
 		camelContext.startRoute(FormatterRouteBuilder.ROUTE_READ_INPUT_FORMATTER);
 		camelContext.startRoute(FormatterRouteBuilder.ROUTE_FORMATTER);
-		template.sendBodyAndHeader("seda:splitxml", irsXml, Exchange.FILE_NAME, "BO_IRS_INC.XML");
+		template.sendBodyAndHeader("direct:splitxml", irsXml, Exchange.FILE_NAME, "BO_IRS_INC.XML");
 
 //		assertTrue(notify.matches());
 		resultEndpoint.assertIsSatisfied();

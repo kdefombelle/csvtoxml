@@ -29,14 +29,18 @@ public class FormatterRouteBuilder extends RouteBuilder{
     	from("file://{{input.xml.split.folder}}?charset=UTF-8&noop=true")
     	.routeId(ROUTE_READ_INPUT_SPLIT_XML)
     	.log("File [${in.header.CamelFileName}] read for split")
-    	.to("seda:splitxml");
+    	.to("direct:splitxml");
     	
-		from("seda:splitxml")
+		from("direct:splitxml")
 		.routeId(ROUTE_SPLIT_XML)
 		.log("Splitting file [${in.header.CamelFileName}]")
+		
+		//.split(xpath("/TRADELIST/FXFWD"))
+		//.log("${body}");
+
 		//from http://www.davsclaus.com/2011/11/splitting-big-xml-files-with-apache.html
     	.split().tokenizeXML(simple("{{input.xml.split.element}}").getText()).streaming()
-    	.threads(20)
+    	//.threads(20)
     	.setHeader("TradeId").xpath("/{{input.xml.split.element}}/TradeId/text()")
        	//TODO:add a counter
        	.setHeader(Exchange.OVERRULE_FILE_NAME, simple("${in.header.TradeId}.xml"))

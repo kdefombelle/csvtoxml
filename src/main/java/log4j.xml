@@ -10,7 +10,7 @@
 	</appender>
 
 	<appender name="file" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="logs/xmlcompare.log" />
+		<param name="File" value="logs/formatter.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %-5p [%t] %c{1} - %m%n" />
 		</layout>
