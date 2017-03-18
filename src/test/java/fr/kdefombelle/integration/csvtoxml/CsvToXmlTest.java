@@ -1,4 +1,4 @@
-package fr.kdefombelle.integration.formatter;
+package fr.kdefombelle.integration.csvtoxml;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import fr.kdefombelle.integration.formatter.FormatterRouteBuilder;
 import fr.kdefombelle.junit.FileResources;
 import fr.kdefombelle.junit.FileResourcesRule;
 
@@ -24,7 +23,7 @@ import fr.kdefombelle.junit.FileResourcesRule;
 @ContextConfiguration({ "classpath:META-INF/spring/spring.xml" })
 //@UseAdviceWith instructs test to not start camel context as some advise should be placed first
 //not needed in this program as camel context is not autostarted.
-public class FormatterTest {
+public class CsvToXmlTest {
 
 	@Rule
 	public FileResourcesRule files = new FileResourcesRule();
@@ -42,26 +41,24 @@ public class FormatterTest {
 
 	@Before
 	public void before() throws Exception {
-		camelContext.getRouteDefinition(FormatterRouteBuilder.ROUTE_FORMATTER).adviceWith(camelContext, new AdviceWithRouteBuilder() {
+		camelContext.getRouteDefinition(CsvToXmlRouteBuilder.ROUTE_READ_INPUT_CSV).adviceWith(camelContext, new AdviceWithRouteBuilder() {
 			@Override
 			public void configure() throws Exception {
 				weaveAddLast().to("mock:result");
 			}
 		});
-
 	}
 
 	@Test
-	@FileResources(files = "input/split/BO_IRS_INC.XML")
+	@FileResources(files = "csv/test.csv")
 	public void testSendMatchingMessage() throws Exception {
-		String irsXml = files.read(0);
-		resultEndpoint.expectedMessageCount(2);
+		String csv = files.read(0);
+		resultEndpoint.expectedMessageCount(1);
 //		NotifyBuildernotify = new NotifyBuilder(camelContext).fromRoute(FormatterRouteBuilder.ROUTE_FORMATTER)
 //				.whenAnyDoneMatches(Builder.header(Exchange.OVERRULE_FILE_NAME).contains("202292HM")).create();
-		camelContext.startRoute(FormatterRouteBuilder.ROUTE_SPLIT_XML);
-		camelContext.startRoute(FormatterRouteBuilder.ROUTE_READ_INPUT_FORMATTER);
-		camelContext.startRoute(FormatterRouteBuilder.ROUTE_FORMATTER);
-		template.sendBodyAndHeader("direct:splitxml", irsXml, Exchange.FILE_NAME, "BO_IRS_INC.XML");
+		camelContext.startRoute(CsvToXmlRouteBuilder.ROUTE_READ_INPUT_CSV);
+		camelContext.startRoute(CsvToXmlRouteBuilder.ROUTE_CSV_TO_XML);
+		template.sendBodyAndHeader("direct:csvToxml", csv, Exchange.FILE_NAME, "test.csv");
 
 //		assertTrue(notify.matches());
 		resultEndpoint.assertIsSatisfied();

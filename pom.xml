@@ -3,11 +3,11 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>fr.kdefombelle.formatter</groupId>
-	<artifactId>formatter</artifactId>
+	<groupId>fr.kdefombelle.integration</groupId>
+	<artifactId>csvtoxml</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>formatter</name>
+	<name>csvtoxml</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -28,63 +28,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.10</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>assemble</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<!-- <binFolder>/</binFolder> -->
-					<binFileExtensions>
-						<unix>.sh</unix>
-					</binFileExtensions>
-					<repositoryName>jar</repositoryName>
-					<repositoryLayout>flat</repositoryLayout>
-					<!-- useWildcardClassPath>true</useWildcardClassPath -->
-					<configurationDirectory>conf</configurationDirectory>
-					<copyConfigurationDirectory>true</copyConfigurationDirectory>
-					<!-- includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath -->
-					<!-- licenseHeaderFile>${project.basedir}/src/main/appassembler/license.txt</licenseHeaderFile -->
-					<assembleDirectory>${project.build.directory}/formatter</assembleDirectory>
-					<!-- platforms> <platform>windows</platform> <platform>unix</platform> </platforms -->
-					<programs>
-						<program>
-							<mainClass>fr.kdefombelle.integration.runner.CamelRouteRunner</mainClass>
-							<name>camel-runner</name>
-							<jvmSettings>
-								<initialMemorySize>1024m</initialMemorySize>
-							</jvmSettings>
-						</program>
-					</programs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.5.5</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptors>
-						<descriptor>${project.basedir}/src/assembly/formatter-assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -94,13 +37,6 @@
 			<groupId>fr.kdefombelle</groupId>
 			<artifactId>commons-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.jopt-simple</groupId>
-			<artifactId>jopt-simple</artifactId>
-			<version>4.9</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -124,7 +60,8 @@
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-freemarker</artifactId>
-			<version>${camel.version}</version> <!-- use the same version as your Camel core version -->
+			<version>${camel.version}</version>
+			<!-- use the same version as your Camel core version -->
 		</dependency>
 
 		<dependency>
@@ -132,7 +69,7 @@
 			<artifactId>camel-csv</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

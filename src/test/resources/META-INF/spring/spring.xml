@@ -8,6 +8,10 @@
 
     <context:annotation-config />
 
-    <import resource="camel-context.xml"/>
+    <camel:camelContext id="camelContext" autoStartup="false">
+		<camel:routeBuilder ref="csvToXmlRouteBuilder" />
+	</camel:camelContext>
+	
+	<import resource="classpath:spring-route.xml"/>
 
 </beans>
