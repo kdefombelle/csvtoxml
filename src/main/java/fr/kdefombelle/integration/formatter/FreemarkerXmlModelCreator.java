@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.formatter;
 
 import java.io.IOException;
 import java.io.Reader;

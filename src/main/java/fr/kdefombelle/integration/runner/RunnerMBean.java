@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.runner;
 
 /**
  * @author kdefombelle

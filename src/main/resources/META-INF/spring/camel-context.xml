@@ -13,11 +13,14 @@
 
 	<camel:camelContext id="camelContext" autoStartup="false">
 		<camel:routeBuilder ref="formatterRouteBuilder" />
+		<camel:routeBuilder ref="csvToXmlRouteBuilder" />
 	</camel:camelContext>
 
-	<bean id="formatter" class="fr.kdefombelle.formatter.Formatter" />
-	<bean id="formatterRouteBuilder" class="fr.kdefombelle.formatter.FormatterRouteBuilder" />
-	<bean id="formatterXmlModelCreator" class="fr.kdefombelle.formatter.FreemarkerXmlModelCreator" />
+
+	<bean id="camelContextHandler" class="fr.kdefombelle.integration.runner.CamelContextHandler" />
+	<bean id="formatterRouteBuilder" class="fr.kdefombelle.integration.formatter.FormatterRouteBuilder" />
+	<bean id="formatterXmlModelCreator" class="fr.kdefombelle.integration.formatter.FreemarkerXmlModelCreator" />
+	<bean id="csvToXmlRouteBuilder" class="fr.kdefombelle.integration.formatter.CsvToXmlRouteBuilder" />
 
 	<!--constructor-arg index="0" value="${murex.reporting.user}" / -->
 

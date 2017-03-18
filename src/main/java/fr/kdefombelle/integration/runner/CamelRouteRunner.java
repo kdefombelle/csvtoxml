@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.runner;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -38,10 +38,10 @@ import joptsimple.OptionSpec;
  */
 @Configuration
 @ComponentScan
-public class FormatterRunner implements FormatterRunnerMBean {
+public class CamelRouteRunner implements CamelRouteRunnerMBean {
 
 	/** The logger used by this class. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(FormatterRunner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CamelRouteRunner.class);
 
 	private static final String OPT_HELP = "help";
 	private static final String OPT_HELP_SHORT = "h";
@@ -52,20 +52,20 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	private static final String OPT_COMMAND = "command";
 	private static final String OPT_COMMAND_SHORT = "c";
 
-	private static final String JMX_DOMAIN = "murex-sg";
+	private static final String JMX_DOMAIN = "kdefombelle";
 	private final CountDownLatch shutdownLatch = new CountDownLatch(1);
 	// private final String objectName;
 	private Agent agent;
 	private ApplicationContext context;
 
-	private FormatterRunner(OptionSet options) throws Throwable {
+	private CamelRouteRunner(OptionSet options) throws Throwable {
 		String host = getHost(options);
 		String port = getPort(options);
 		String jmxUrl = new JmxUrlBuilder().setHost(host).setRmiRegistryPort(port).build();
 		LOGGER.debug("JMX URL created {}", jmxUrl);
 		agent = new SimpleAgent(jmxUrl, new HashMap<>(), new ObjectNameFactory(JMX_DOMAIN));
-		agent.registerMBean(this, "formatter", port);
-		LOGGER.info("Initializing formatter {}:{}", host, port);
+		agent.registerMBean(this, "camelRouteRunner", port);
+		LOGGER.info("Initializing {} {}:{}", CamelRouteRunner.class.getSimpleName(), host, port);
 	}
 
 	private static String getHost(OptionSet options) throws UnknownHostException {
@@ -96,7 +96,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	}
 
 	private static String getObjectName(String port) {
-		return JMX_DOMAIN + ":formatter=" + port + "," + JmxConstants.KEY_TYPE + "=formatter";
+		return JMX_DOMAIN + ":port=" + port + "," + JmxConstants.KEY_TYPE + "=camelRouteRunner";
 	}
 
 	private void awaitShutdown() throws InterruptedException {
@@ -132,7 +132,7 @@ public class FormatterRunner implements FormatterRunnerMBean {
 				parser.printHelpOn(System.out);
 				return;
 			} catch (IOException e) {
-				LOGGER.error(FormatterRunner.class.getClass().getSimpleName() + " execution failed:", e);
+				LOGGER.error(CamelRouteRunner.class.getClass().getSimpleName() + " execution failed:", e);
 				return;
 			}
 		}
@@ -149,25 +149,25 @@ public class FormatterRunner implements FormatterRunnerMBean {
 	}
 
 	public static void startCommand(OptionSet options) throws Throwable {
-		LOGGER.info("Starting Formatter");
-		FormatterRunner formaterRunner = new FormatterRunner(options);
+		LOGGER.info("Starting {}", CamelRouteRunner.class.getSimpleName());
+		CamelRouteRunner camelRouteRunner = new CamelRouteRunner(options);
 		long startTime = System.currentTimeMillis();
 		String port = getPort(options);
 		LocateRegistry.createRegistry(Integer.parseInt(port));
-		formaterRunner.startJmxConnector();
+		camelRouteRunner.startJmxConnector();
 
 		invokeRemoteOperation("start", getPort(options));
 
-		LOGGER.info("Formatter started in {}", TimeUtils.printDuration(System.currentTimeMillis() - startTime));
-		formaterRunner.awaitShutdown();
+		LOGGER.info("{} started in {}", CamelRouteRunner.class.getSimpleName(),TimeUtils.printDuration(System.currentTimeMillis() - startTime));
+		camelRouteRunner.awaitShutdown();
 	}
 
 	public static void stopCommand(OptionSet options) throws Throwable {
-		LOGGER.info("Stopping Formatter");
+		LOGGER.info("Stopping {}", CamelRouteRunner.class.getSimpleName());
 		long startTime = System.currentTimeMillis();
 		invokeRemoteOperation("stop", getPort(options));
 		//TODO: ensure stop is completed to handle properly camel context auto startup false
-		LOGGER.info("Formatter stopped in {}", TimeUtils.printDuration(System.currentTimeMillis() - startTime));
+		LOGGER.info("{} stopped in {}", CamelRouteRunner.class.getSimpleName(), TimeUtils.printDuration(System.currentTimeMillis() - startTime));
 	}
 
 	private static void invokeRemoteOperation(String operation, String port) throws IOException, JMException {
@@ -180,22 +180,22 @@ public class FormatterRunner implements FormatterRunnerMBean {
 		JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl, null);
 		MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 		LOGGER.debug("Object name {}", getObjectName(port));
-		ObjectName runnerObjectName = new ObjectNameFactory(JMX_DOMAIN).createObjectName("formatter", port);
+		ObjectName runnerObjectName = new ObjectNameFactory(JMX_DOMAIN).createObjectName("camelRouteRunner", port);
 		return mbsc.invoke(runnerObjectName, operation, params, signature);
 	}
 
 	@Override
 	public void start() {
 		context = new ClassPathXmlApplicationContext("META-INF/spring/spring.xml");
-		Formatter formatter = context.getBean(Formatter.class);
-		formatter.start();
+		CamelContextHandler camelContextHandler = context.getBean(CamelContextHandler.class);
+		camelContextHandler.start();
 	}
 
 	@Override
 	public void stop() {
 		try {
-			Formatter formatter = context.getBean(Formatter.class);
-			formatter.stop();
+			CamelContextHandler camelContextHandler = context.getBean(CamelContextHandler.class);
+			camelContextHandler.stop();
 			agent.stopJmxConnector();
 		} finally {
 			shutdownLatch.countDown();

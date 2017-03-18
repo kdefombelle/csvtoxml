@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.formatter;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;

@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.runner;
 
 import org.apache.camel.CamelContext;
 import org.slf4j.Logger;
@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author kdefombelle
  */
-public class Formatter {
+public class CamelContextHandler {
 
-    private Logger logger = LoggerFactory.getLogger(Formatter.class);
+    private Logger logger = LoggerFactory.getLogger(CamelContextHandler.class);
 
     @Autowired
     private CamelContext camelContext;
 
     public void start(){
-        logger.debug("{} starting isCamelAutoStartup {}",Formatter.class.getSimpleName(), camelContext.isAutoStartup());
+        logger.debug("{} starting isCamelAutoStartup {}",CamelContextHandler.class.getSimpleName(), camelContext.isAutoStartup());
         try {
         	camelContext.start();
         	camelContext.startAllRoutes();
@@ -28,7 +28,7 @@ public class Formatter {
     }
     
     public void stop(){
-    	logger.debug("{} stopping", Formatter.class.getSimpleName());
+    	logger.debug("{} stopping", CamelContextHandler.class.getSimpleName());
     	try {
 			camelContext.stop();
 		} catch (Exception e) {

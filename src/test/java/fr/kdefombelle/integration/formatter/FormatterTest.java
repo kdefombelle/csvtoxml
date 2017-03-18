@@ -1,4 +1,4 @@
-package fr.kdefombelle.formatter;
+package fr.kdefombelle.integration.formatter;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import fr.kdefombelle.integration.formatter.FormatterRouteBuilder;
 import fr.kdefombelle.junit.FileResources;
 import fr.kdefombelle.junit.FileResourcesRule;
 
