@@ -56,8 +56,8 @@
 					<!-- platforms> <platform>windows</platform> <platform>unix</platform> </platforms -->
 					<programs>
 						<program>
-							<mainClass>fr.kdefombelle.formatter.FormatterRunner</mainClass>
-							<name>formatter</name>
+							<mainClass>fr.kdefombelle.integration.runner.CamelRouteRunner</mainClass>
+							<name>camel-runner</name>
 							<jvmSettings>
 								<initialMemorySize>1024m</initialMemorySize>
 							</jvmSettings>
@@ -74,7 +74,6 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-
 							<goal>single</goal>
 						</goals>
 					</execution>
